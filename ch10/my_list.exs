@@ -45,5 +45,10 @@ defmodule MyList do
   defp _take(_, 0, acc), do: acc
   defp _take([], _, acc), do: acc
 
+  # MyList.flatten([1, [[2], 3]]) => [1, 2, 3]
+  # MyList.flatten([1, [2, 3, [4]], 5, [[[6]]]]) => [1, 2, 3, 4, 5, 6]
+  def flatten([]), do: []
+  def flatten(not_list) when not is_list(not_list), do: [not_list]
+  def flatten([head | tail]), do: flatten(head) ++ flatten(tail)
 
 end

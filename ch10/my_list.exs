@@ -51,4 +51,29 @@ defmodule MyList do
   def flatten(not_list) when not is_list(not_list), do: [not_list]
   def flatten([head | tail]), do: flatten(head) ++ flatten(tail)
 
+  def span(from, to) when from > to, do: []
+  def span(from, to), do: [from | span(from + 1, to)]
+
+  def primes_up_to(n) do
+    range = span(2, n)
+    not_primes = for x <- range, y <- range, x < y, x*y <= n, do: x*y
+    range -- not_primes
+  end
+
+  def orders_with_tax do
+    tax_rates = [ NC: 0.075, TX: 0.08 ]
+    orders = [
+      [ id: 123, ship_to: :NC, net_amount: 100.00 ],
+      [ id: 124, ship_to: :OK, net_amount:  35.50 ],
+      [ id: 125, ship_to: :TX, net_amount:  24.00 ],
+      [ id: 126, ship_to: :TX, net_amount:  44.80 ],
+      [ id: 127, ship_to: :NC, net_amount:  25.00 ],
+      [ id: 128, ship_to: :MA, net_amount:  10.00 ],
+      [ id: 129, ship_to: :CA, net_amount: 102.00 ],
+      [ id: 120, ship_to: :NC, net_amount:  50.00 ] ]
+    for order <- orders,
+        order[:ship_to] == :NC || order[:ship_to] == :TX,
+        do: Keyword.merge(order, [total_count: order[:net_amount] * (1 + tax_rates[order[:ship_to]])])
+  end
+
 end
